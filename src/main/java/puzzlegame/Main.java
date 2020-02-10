@@ -5,6 +5,8 @@
  */
 package puzzlegame;
 
+import java.util.Iterator;
+import puzzlegame.domain.LocalBeam;
 import puzzlegame.domain.Puzzle;
 
 /**
@@ -13,8 +15,27 @@ import puzzlegame.domain.Puzzle;
  */
 public class Main {
     public static void main(String[] args) {
-        Puzzle puzzle = new Puzzle(3, 4);
-        puzzle.drawMatrix();
-        puzzle.getManhattanDistance();
+        
+        //These paramenters can be configured
+        int rows = 3;
+        int columns = 3;
+        int k = 2;
+        int maxIterations = 1000;
+        
+        Puzzle randomPuzzle = new Puzzle(rows, columns);
+        randomPuzzle.drawMatrix();
+        
+        LocalBeam localBeam = new LocalBeam(k, randomPuzzle);
+        while (localBeam.getCurrentBestPuzzle().getManhattanDistance() > 0 && maxIterations > 0){
+            localBeam.generateNextIteration();
+            for (int i = 0; i < localBeam.getCurrentIteration().size(); i++) {
+                System.out.println("Matrix K = " + i + " with Manhattan Distance = " + localBeam.getCurrentIteration().get(i).getManhattanDistance());
+                localBeam.getCurrentIteration().get(i).drawMatrix();
+            }
+            maxIterations--;
+        }
+        
+        System.out.println("Final Matrix: ");
+        localBeam.getCurrentBestPuzzle().drawMatrix();
     }
 }
